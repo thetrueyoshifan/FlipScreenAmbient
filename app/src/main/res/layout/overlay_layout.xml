@@ -1,0 +1,68 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="160px"
+                android:layout_height="240px"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+    <!-- Background Image -->
+    <ImageView
+            android:id="@+id/background_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/background_image"
+            android:contentDescription="Background"
+    />
+
+    <!-- Date above the clock -->
+    <TextView
+            android:id="@+id/date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/clock_text"
+            android:layout_marginBottom="-5dp"
+            android:textSize="20px"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-light"
+            android:text="Jan 10, 2025" />
+
+    <!-- Clock in the center -->
+    <TextView
+            android:id="@+id/clock_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="40px"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-light"
+            android:text="12:00" />
+
+    <!-- Battery icon and percentage -->
+    <LinearLayout
+            android:id="@+id/battery_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="8px"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+        <ImageView
+                android:id="@+id/battery_icon"
+                android:layout_width="16px"
+                android:layout_height="16px"
+                android:layout_marginEnd="4px"
+                android:src="@drawable/ic_battery_0"
+                android:contentDescription="Battery icon" />
+
+        <TextView
+                android:id="@+id/battery_percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16px"
+                android:textColor="@android:color/white"
+                android:text="85%" />
+    </LinearLayout>
+</RelativeLayout>

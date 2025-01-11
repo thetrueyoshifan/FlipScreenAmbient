@@ -1,0 +1,79 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="16dp">
+
+    <!-- Clock Font -->
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clock Font" />
+
+    <Spinner
+            android:id="@+id/font_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    <!-- Clock Text Size -->
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clock Size (px)" />
+
+    <EditText
+            android:id="@+id/clock_size_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:hint="Enter clock size" />
+
+    <!-- Date Text Size -->
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date Size (px)" />
+
+    <EditText
+            android:id="@+id/date_size_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:hint="Enter date size" />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Text Color (Hex)" />
+
+    <EditText
+            android:id="@+id/text_color_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter hex color" />
+    <CheckBox
+        android:id="@+id/text_shadow_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enable text shadow" />
+    <!-- Background Image -->
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Background Image" />
+
+    <Button
+            android:id="@+id/select_background_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text="Select Background Image" />
+
+
+    <!-- Save Button -->
+    <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Save" />
+</LinearLayout>
