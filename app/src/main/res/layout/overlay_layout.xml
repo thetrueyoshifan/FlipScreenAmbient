@@ -4,41 +4,72 @@
                 android:clipChildren="false"
                 android:clipToPadding="false">
 
-    <!-- Background Image -->
     <ImageView
             android:id="@+id/background_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/background_image"
+            android:src="@drawable/senko_temp"
             android:contentDescription="Background"
     />
+    <RelativeLayout
+            android:id="@+id/clock_modern"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView
+                android:id="@+id/date_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_above="@+id/clock_text"
+                android:layout_marginBottom="-5dp"
+                android:textSize="20px"
+                android:textColor="@android:color/white"
+                android:fontFamily="sans-serif-light"
+                android:text="Wed, Jan 10"/>
+        <TextView
+                android:id="@+id/clock_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textSize="35px"
+                android:textColor="@android:color/white"
+                android:fontFamily="sans-serif-light"
+                android:text="12:00 PM"/>
+    </RelativeLayout>
+    <RelativeLayout
+            android:id="@+id/clock_classic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutMode="opticalBounds">
+        <ImageView
+                android:id="@+id/classic_clock_mask"
+                android:layout_width="match_parent"
+                android:layout_height="28px"
+                android:layout_alignParentBottom="true"
+                android:src="@color/black"
+                android:alpha="0.75"
+        />
+        <TextView
+                android:id="@+id/classic_datetime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="2.5dp"
+                android:layout_alignParentBottom="true"
 
-    <!-- Date above the clock -->
-    <TextView
-            android:id="@+id/date_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_above="@+id/clock_text"
-            android:layout_marginBottom="-5dp"
-            android:textSize="20px"
-            android:textColor="@android:color/white"
-            android:fontFamily="sans-serif-light"
-            android:text="Jan 10, 2025" />
-
-    <!-- Clock in the center -->
-    <TextView
-            android:id="@+id/clock_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textSize="40px"
-            android:textColor="@android:color/white"
-            android:fontFamily="sans-serif-light"
-            android:text="12:00" />
-
-    <!-- Battery icon and percentage -->
+                android:textSize="15px"
+                android:textColor="@android:color/white"
+                android:fontFamily="sans-serif-light"
+                android:text="Wed, Jan 10 12:00 PM"/>
+    </RelativeLayout>
+    <ImageView
+            android:id="@+id/status_mask"
+            android:layout_width="match_parent"
+            android:layout_height="32px"
+            android:src="@color/black"
+            android:alpha="0.75"
+    />
     <LinearLayout
             android:id="@+id/battery_status"
             android:layout_width="wrap_content"
@@ -46,23 +77,44 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="8px"
-            android:orientation="horizontal"
             android:gravity="center_vertical">
-
-        <ImageView
-                android:id="@+id/battery_icon"
-                android:layout_width="16px"
-                android:layout_height="16px"
-                android:layout_marginEnd="4px"
-                android:src="@drawable/ic_battery_0"
-                android:contentDescription="Battery icon" />
-
         <TextView
                 android:id="@+id/battery_percentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16px"
+                android:textSize="12px"
                 android:textColor="@android:color/white"
-                android:text="85%" />
+                android:text="0%"/>
+        <ImageView
+                android:id="@+id/battery_icon"
+                android:layout_width="16px"
+                android:layout_height="16px"
+                android:src="@drawable/ic_battery_0"
+                android:contentDescription="Battery icon"/>
+
+
+    </LinearLayout>
+    <LinearLayout
+            android:id="@+id/signal_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="8px"
+            android:gravity="center_vertical">
+
+        <ImageView
+                android:id="@+id/signal_icon"
+                android:layout_width="16px"
+                android:layout_height="16px"
+                android:layout_marginEnd="8px"
+                android:src="@drawable/ic_signal_0"/>
+        <ImageView
+                android:id="@+id/wifi_icon"
+                android:layout_width="16px"
+                android:layout_height="16px"
+                android:layout_marginEnd="8px"
+                android:src="@drawable/ic_wifi_0"/>
+
     </LinearLayout>
 </RelativeLayout>

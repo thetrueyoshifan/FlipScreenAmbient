@@ -10,6 +10,7 @@ import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.hardware.display.DisplayManager
+import android.opengl.Visibility
 import android.os.BatteryManager
 import android.os.Handler
 import android.os.Looper
@@ -26,6 +27,7 @@ import android.widget.TextView
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.prefs.Preferences
 
 class OverlayAccessibilityService : AccessibilityService() {
 
@@ -34,6 +36,8 @@ class OverlayAccessibilityService : AccessibilityService() {
     private lateinit var displayManager: DisplayManager
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var preferences: SharedPreferences
+    private var classicClock = false
+    private var clock24h = false
 
 
     override fun onServiceConnected() {
@@ -129,21 +133,30 @@ class OverlayAccessibilityService : AccessibilityService() {
     }
 
     private fun processPreferences() {
-        val clockText: TextView? = overlayView?.findViewById(R.id.clock_text)
-        val dateText: TextView? = overlayView?.findViewById(R.id.date_text)
+        Log.d("OverlayService", "Preference initialization started")
+
+        val modernClockText: TextView? = overlayView?.findViewById(R.id.clock_text)
+        val modernDateText: TextView? = overlayView?.findViewById(R.id.date_text)
+        val classicDateTimeText: TextView? = overlayView?.findViewById(R.id.classic_datetime)
         val batteryText: TextView? = overlayView?.findViewById(R.id.battery_percentage)
         val batteryIcon: ImageView? = overlayView?.findViewById(R.id.battery_icon)
+        val signalIcon: ImageView? = overlayView?.findViewById(R.id.signal_icon)
+        val wifiIcon: ImageView? = overlayView?.findViewById(R.id.wifi_icon)
+        val classicDateTimeMask: ImageView? = overlayView?.findViewById(R.id.classic_clock_mask)
+        val statusIconMask: ImageView? = overlayView?.findViewById(R.id.status_mask)
         val backgroundImage: ImageView? = overlayView?.findViewById(R.id.background_image)
+
+        Log.d("OverlayService", "Grabbed all objects from view")
 
         val clockSize = preferences.getFloat("clock_size", 40f)
         val clockFont = preferences.getString("clock_font", "sans-serif-light") ?: "sans-serif-light"
-        clockText?.setTextSize(TypedValue.COMPLEX_UNIT_PX, clockSize)
-        clockText?.typeface = if (!listOf("sans-serif-light", "sans-serif", "serif", "monospace").contains(clockFont)) {
+        modernClockText?.setTextSize(TypedValue.COMPLEX_UNIT_PX, clockSize)
+        modernClockText?.typeface = if (!listOf("sans-serif-light", "sans-serif", "serif", "monospace").contains(clockFont)) {
             Typeface.createFromFile("/system/fonts/$clockFont.ttf")
         } else {
             Typeface.create(clockFont, Typeface.NORMAL)
         }
-        dateText?.typeface = if (!listOf("sans-serif-light", "sans-serif", "serif", "monospace").contains(clockFont)) {
+        modernDateText?.typeface = if (!listOf("sans-serif-light", "sans-serif", "serif", "monospace").contains(clockFont)) {
             Typeface.createFromFile("/system/fonts/$clockFont.ttf")
         } else {
             Typeface.create(clockFont, Typeface.NORMAL)
@@ -153,19 +166,31 @@ class OverlayAccessibilityService : AccessibilityService() {
         } else {
             Typeface.create(clockFont, Typeface.NORMAL)
         }
+        classicDateTimeText?.typeface = if (!listOf("sans-serif-light", "sans-serif", "serif", "monospace").contains(clockFont)) {
+            Typeface.createFromFile("/system/fonts/$clockFont.ttf")
+        } else {
+            Typeface.create(clockFont, Typeface.NORMAL)
+        }
+        Log.d("OverlayService", "Configured typeface")
+
         val textColor = Color.parseColor(preferences.getString("text_color", "#ffffff")) ?: Color.WHITE
         val textShadow = preferences.getBoolean("text_shadow", true) ?: true
-        clockText?.setTextColor(textColor)
-        dateText?.setTextColor(textColor)
+        modernClockText?.setTextColor(textColor)
+        modernDateText?.setTextColor(textColor)
         batteryText?.setTextColor(textColor)
         batteryIcon?.setColorFilter(textColor)
+        classicDateTimeText?.setTextColor(textColor)
+        signalIcon?.setColorFilter(textColor)
+        wifiIcon?.setColorFilter(textColor)
+        Log.d("OverlayService", "Set colors")
+
         if (textShadow) {
-            clockText?.setShadowLayer(6f, 3f, 3f, Color.parseColor("#80000000"))
-            dateText?.setShadowLayer(4f, 2f, 2f, Color.parseColor("#80000000"))
+            modernClockText?.setShadowLayer(6f, 3f, 3f, Color.parseColor("#80000000"))
+            modernDateText?.setShadowLayer(4f, 2f, 2f, Color.parseColor("#80000000"))
             batteryText?.setShadowLayer(2f, 1f, 1f, Color.parseColor("#80000000"))
         }
         val dateSize = preferences.getFloat("date_size", 20f)
-        dateText?.setTextSize(TypedValue.COMPLEX_UNIT_PX, dateSize)
+        modernDateText?.setTextSize(TypedValue.COMPLEX_UNIT_PX, dateSize)
 
         val backgroundPath = preferences.getString("background_image_path", null)
         if (backgroundPath != null) {
@@ -175,6 +200,26 @@ class OverlayAccessibilityService : AccessibilityService() {
                 backgroundImage?.setImageBitmap(bitmap)
             }
         }
+        Log.d("OverlayService", "Configured Background")
+
+        classicClock = preferences.getBoolean("classic_clock", false)
+        clock24h = preferences.getBoolean("24h_clock", true)
+        if (classicClock) {
+            modernClockText?.visibility = View.GONE
+            modernDateText?.visibility = View.GONE
+            classicDateTimeText?.visibility = View.VISIBLE
+            classicDateTimeMask?.visibility = View.VISIBLE
+            statusIconMask?.visibility = View.VISIBLE
+
+        } else
+        {
+            modernClockText?.visibility = View.VISIBLE
+            modernDateText?.visibility = View.VISIBLE
+            classicDateTimeText?.visibility = View.GONE
+            classicDateTimeMask?.visibility = View.GONE
+            statusIconMask?.visibility = View.GONE
+        }
+        Log.d("OverlayService", "Preference initialization complete")
     }
 
     private fun startClock() {
@@ -190,19 +235,30 @@ class OverlayAccessibilityService : AccessibilityService() {
     }
 
     private fun updateScreenContents() {
-        val clockText: TextView? = overlayView?.findViewById(R.id.clock_text)
-        val dateText: TextView? = overlayView?.findViewById(R.id.date_text)
+        val modernClockText: TextView? = overlayView?.findViewById(R.id.clock_text)
+        val modernDateText: TextView? = overlayView?.findViewById(R.id.date_text)
+        val classicDateTimeText: TextView? = overlayView?.findViewById(R.id.classic_datetime)
         val batteryPercentage: TextView? = overlayView?.findViewById(R.id.battery_percentage)
         val batteryIcon: ImageView? = overlayView?.findViewById(R.id.battery_icon)
+        val signalIcon: ImageView? = overlayView?.findViewById(R.id.signal_icon)
+        val wifiIcon: ImageView? = overlayView?.findViewById(R.id.wifi_icon)
 
-        val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-        val currentDate = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date())
+        var clockPattern = ""
+        if (clock24h)
+            clockPattern = "HH:mm"
+        else
+            clockPattern = "hh:mm aa"
+        if (!classicClock) {
+            val currentTime = SimpleDateFormat(clockPattern, Locale.getDefault()).format(Date())
+            val currentDate = SimpleDateFormat("EEE, MMM dd", Locale.getDefault()).format(Date())
 
-        clockText?.text = currentTime
-        dateText?.text = currentDate
-
-        val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+            modernClockText?.text = currentTime
+            modernDateText?.text = currentDate
+        } else
+            classicDateTimeText?.text = SimpleDateFormat("EEE, MMM dd "+clockPattern, Locale.getDefault()).format(Date())
+        var intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val batteryStatus = registerReceiver(null, intentFilter)
+
 
         val level = batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
         val scale = batteryStatus?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: -1

@@ -20,6 +20,8 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var dateSizeInput: EditText
     private lateinit var textColorInput: EditText
     private lateinit var textShadowCheck: CheckBox
+    private lateinit var clock24hCheck: CheckBox
+    private lateinit var classicClockCheck: CheckBox
     private lateinit var selectBackgroundButton: Button
     private lateinit var saveButton: Button
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -50,6 +52,8 @@ class SettingsActivity : AppCompatActivity() {
         dateSizeInput = findViewById(R.id.date_size_input)
         textColorInput = findViewById(R.id.text_color_input)
         textShadowCheck = findViewById(R.id.text_shadow_check)
+        clock24hCheck = findViewById(R.id.clock_24h_check)
+        classicClockCheck = findViewById(R.id.classic_clock_check)
         selectBackgroundButton = findViewById(R.id.select_background_button)
         saveButton = findViewById(R.id.save_button)
 
@@ -94,6 +98,8 @@ class SettingsActivity : AppCompatActivity() {
         dateSizeInput.setText(preferences.getFloat("date_size", 20f).toString())
         textColorInput.setText(preferences.getString("text_color", "#FFFFFF"))
         textShadowCheck.isChecked = preferences.getBoolean("text_shadow", true)
+        clock24hCheck.isChecked = preferences.getBoolean("24h_clock", true)
+        classicClockCheck.isChecked = preferences.getBoolean("classic_clock", false)
 
         val font = preferences.getString("clock_font", "sans-serif-light") ?: "sans-serif-light"
         val fontIndex = (fontSpinner.adapter as ArrayAdapter<String>).getPosition(font)
@@ -108,6 +114,8 @@ class SettingsActivity : AppCompatActivity() {
         val dateSize = dateSizeInput.text.toString().toFloatOrNull() ?: 20f
         val textColor = textColorInput.text.toString()
         val textShadow = textShadowCheck.isChecked
+        val clock24h = clock24hCheck.isChecked
+        val classicClock = classicClockCheck.isChecked
         val selectedFont = fontSpinner.selectedItem as String
 
         editor.putFloat("clock_size", clockSize)
@@ -115,6 +123,8 @@ class SettingsActivity : AppCompatActivity() {
         editor.putString("clock_font", selectedFont)
         editor.putString("text_color", textColor)
         editor.putBoolean("text_shadow", textShadow)
+        editor.putBoolean("24h_clock", clock24h)
+        editor.putBoolean("classic_clock", classicClock)
         editor.apply()
 
         finish()
